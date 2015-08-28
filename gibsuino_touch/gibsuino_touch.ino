@@ -14,6 +14,7 @@
 // include the atmel I2C libs
 #include "mpr121.h"
 #include "i2c.h"
+#include "LiquidCrystal.h"
 
 #define DIGITS 			11
 // interrupt for capacitive touchpad controller
@@ -24,23 +25,35 @@
 char touchButtons[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9','*','0','#'};
 uint16_t touchstatus = 0;
 
+enum lcd_pins {DATA3 = 50, DATA2, DATA1, DATA0, RS, EN};
+int lcdPins[] = {50, 51, 52, 53, 54, 55};
+LiquidCrystal lcd(RS, EN, DATA0, DATA1, DATA2, DATA3);
+
 int rgb[] = {10,9,8};
 enum colors {RED, GREEN, BLUE};
 
+char version[] = "1.0";
+
 void setup()
 {
+	int i;
+
 	// make sure the interrupt pin is an input and pulled-up
 	pinMode(TOUCH_PIN, INPUT_PULLUP);
 
 	// set LEDs as Outputs
-	for (int i = 62; i < 70; i++) {
+	for (i = 62; i < 70; i++) {
 		pinMode(i, OUTPUT);
 	}
 
-	for (int i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) {
 		pinMode(rgb[i], OUTPUT);
 		digitalWrite(rgb[i], HIGH);
-	} 
+	}
+
+	for (i = 0; i <= 6; i++) {
+		pinMode(lcdPins[i], OUTPUT);
+	}
 
 	// output on PD1 (20) = SDA
 	DDRD |= 0b00000010;
@@ -60,6 +73,14 @@ void setup()
 
 	// configure serial out
 	Serial.begin(115200);
+
+	// print Version info to LCD
+	lcd.begin(16, 2);
+	lcd.setCursor(0, 0);
+	lcd.clear();
+	lcd.print("Gibsuino");
+	lcd.setCursor(9, 0);
+	lcd.print(version);
 
 	//digitalWrite(rgb[GREEN], LOW);
 	//digitalWrite(rgb[BLUE],LOW);
