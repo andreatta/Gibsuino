@@ -32,7 +32,7 @@ LiquidCrystal lcd(RS, EN, DATA0, DATA1, DATA2, DATA3);
 int rgb[] = {10,9,8};
 enum colors {RED, GREEN, BLUE};
 
-char version[] = "1.0";
+char version[] = "Gibsuino 1.1";
 
 void setup()
 {
@@ -76,11 +76,9 @@ void setup()
 
 	// print Version info to LCD
 	lcd.begin(16, 2);
-	lcd.setCursor(0, 0);
 	lcd.clear();
-	lcd.print("Gibsuino");
-	lcd.setCursor(9, 0);
 	lcd.print(version);
+	lcd.setCursor(0, 1);
 
 	//digitalWrite(rgb[GREEN], LOW);
 	//digitalWrite(rgb[BLUE],LOW);
@@ -89,6 +87,7 @@ void setup()
 
 void loop()
 {
+	static int charcount;
 	static int led = 62;  
 	digitalWrite(led, LOW);
 
@@ -100,6 +99,13 @@ void loop()
 
 	if (touchstatus) {
 		Serial.println(touchButtons[getPressedNumber(touchstatus)]);
+		if (charcount > 15) {
+			charcount = 0;
+			lcd.clear();
+			lcd.print(version);
+			lcd.setCursor(0,1);
+		}
+		charcount += lcd.print(touchButtons[getPressedNumber(touchstatus)]);
 		touchstatus = 0;
 	}
 }
