@@ -79,10 +79,6 @@ void setup()
 	lcd.clear();
 	lcd.print(version);
 	lcd.setCursor(0, 1);
-
-	//digitalWrite(rgb[GREEN], LOW);
-	//digitalWrite(rgb[BLUE],LOW);
-	//digitalWrite(rgb[RED], LOW);
 }
 
 void loop()
