@@ -29,10 +29,12 @@ enum lcd_pins {DATA3 = 50, DATA2, DATA1, DATA0, RS, EN};
 int lcdPins[] = {50, 51, 52, 53, 54, 55};
 LiquidCrystal lcd(RS, EN, DATA0, DATA1, DATA2, DATA3);
 
-int rgb[] = {10,9,8};
+int rgbPins[] = {10,9,8};
 enum colors {RED, GREEN, BLUE};
 
-char version[] = "Gibsuino 1.1";
+int ledPins[] = {62, 63, 64, 65, 66, 67, 68, 69};
+
+char version[] = "Gibsuino 1.2";
 
 void setup()
 {
@@ -42,13 +44,13 @@ void setup()
 	pinMode(TOUCH_PIN, INPUT_PULLUP);
 
 	// set LEDs as Outputs
-	for (i = 62; i < 70; i++) {
-		pinMode(i, OUTPUT);
+	for (i = 0; i < 8; i++) {
+		pinMode(ledPins[i], OUTPUT);
 	}
 
 	for (i = 0; i < 3; i++) {
-		pinMode(rgb[i], OUTPUT);
-		digitalWrite(rgb[i], HIGH);
+		pinMode(rgbPins[i], OUTPUT);
+		digitalWrite(rgbPins[i], HIGH);
 	}
 
 	for (i = 0; i <= 6; i++) {
@@ -84,13 +86,19 @@ void setup()
 void loop()
 {
 	static int charcount;
-	static int led = 62;  
-	digitalWrite(led, LOW);
+	static int led = 0;
+	static bool up = true;
+	
+	digitalWrite(ledPins[led], LOW);
 
-	if (led++ >= 70) 
-		led = 62;
+	// K.I.T.T
+	if (led < 7 && up) {
+		++led;
+	} else {
+		(--led == 0) ? up = true : up = false;
+	}
 
-	digitalWrite(led, HIGH);
+	digitalWrite(ledPins[led], HIGH);
 	delay(100);
 
 	if (touchstatus) {
